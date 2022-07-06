@@ -9,14 +9,16 @@ import java.io.*;
 public class ConnectionManager {
 	public boolean running ;
 	public boolean connected;
-	public int PORT = 0;
+	public int port = 0;
+	public int backPort = 0;
 	public int amount = 0;
 	public Socket socket;
 	public TCPServerThread tcp;
 	public ServerSocket serverSocket;
 	
-	public ConnectionManager(int PORT) {
-		this.PORT = PORT;
+	public ConnectionManager(int port, int backPort) {
+		this.port = port;
+		this.backPort = backPort;
 	}
 	
 	public void run() {
@@ -25,7 +27,7 @@ public class ConnectionManager {
 			URL whatismyip = new URL("http://checkip.amazonaws.com");
 			BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
 			String ip = in.readLine(); //you get the IP as a String
-			System.out.println("started at: " + ip + ":" + PORT);
+			System.out.println("started at: " + ip + ":" + port + " and :" + backPort);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -45,7 +47,7 @@ public class ConnectionManager {
 					System.out.println("I/O error: " + e);
 				}
 				// new thread for a client	
-				executor.execute(new TCPServerThread(this, socket));
+				executor.execute(new TCPServerThread(this, socket, backPort));
 				System.out.println("TCP thread created");
 			}
 		}
@@ -60,7 +62,7 @@ public class ConnectionManager {
 		
 		//create Server Socket
 		try {
-			serverSocket = new ServerSocket(PORT);
+			serverSocket = new ServerSocket(port);
 			System.out.println("SOCKET CREATED");
 		} catch (IOException e) {
 			e.printStackTrace();

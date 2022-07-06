@@ -48,6 +48,7 @@ public class TCPServerThread implements Runnable{
 	public int screen = 2;
 	int screenOffsetX = 0;
 	int screenOffsetY = 0;
+	public int backPort = 0;
     ConnectionManager cm;
     static Socket socket;
     public Thread thread;
@@ -56,9 +57,11 @@ public class TCPServerThread implements Runnable{
     public DataOutputStream dos = null;
     public OutputStream os = null;
     
-    public TCPServerThread(ConnectionManager cm, Socket clientSocket) {
+   
+    public TCPServerThread(ConnectionManager cm, Socket clientSocket, int backPort) {
     	this.cm = cm;
     	this.socket = clientSocket;
+    	this.backPort = backPort;
     }
     
     public void captureScreen() throws Exception {
@@ -298,7 +301,7 @@ public class TCPServerThread implements Runnable{
 				        dos.writeBytes(byteArrayOutputStream.size() + "\r\n");
 				        dos.flush();
 				        
-				        final ServerSocket SSS = new ServerSocket(8888);
+				        final ServerSocket SSS = new ServerSocket(backPort);
 				        final Socket secondSocket = SSS.accept();
 				        OutputStream os2 = secondSocket.getOutputStream();
 				        
